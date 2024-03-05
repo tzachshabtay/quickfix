@@ -50,7 +50,6 @@ type session struct {
 	stateTimer *internal.EventTimer
 	peerTimer  *internal.EventTimer
 	sentReset  bool
-	stopOnce   sync.Once
 
 	targetDefaultApplVerID string
 
@@ -92,10 +91,7 @@ func (s *session) connect(msgIn <-chan fixIn, msgOut chan<- []byte) error {
 type stopReq struct{}
 
 func (s *session) stop() {
-	// Stop once.
-	s.stopOnce.Do(func() {
-		s.admin <- stopReq{}
-	})
+	s.admin <- stopReq{}
 }
 
 type waitChan <-chan interface{}
